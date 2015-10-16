@@ -3,12 +3,14 @@
   "version": "0.1.15",
   "description": "framework for obigo web application",
   "dependencies": {
-    "grunt": "~0.4.5"
+    "grunt": "~0.4.5",
+    "grunt-contrib-concat" : "latest",
+    "grunt-contrib-uglify" : "latest"
   },
   "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
+  "author": "Frey yoo",
   "license": "Copyright (C) OBIGO Ltd., <%= grunt.template.today('yyyy') %>.\nAll rights reserved.\n\nThis software is covered by the license agreement between\nthe end user and OBIGO Ltd., and may be\nused and copied only in accordance with the terms of the\nsaid agreement.\n\nOBIGO Ltd. assumes no responsibility or\nliability for any errors or inaccuracies in this software,\nor any consequential, incidental or indirect damage arising\nout of the use of the software\n"
 }
