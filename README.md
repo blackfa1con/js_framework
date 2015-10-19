@@ -23,5 +23,7 @@ After install packages, run **grunt** in same directory.
 #build results are generated in /dist directory
 grunt
 ```
+
+Or if you want to get build results directly, you can get it in **js_framewokr/dist** directory.
 #Documents
 [Doc site](http://210.216.54.99)
