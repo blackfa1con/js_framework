@@ -1,6 +1,6 @@
 /*
-obigoApp - v0.1.15
-release date : 2015-10-16 
+obigoApp - v0.1.16
+release date : 2015-10-20 
 
 Copyright (C) OBIGO Ltd., 2015.
 All rights reserved.
@@ -260,6 +260,46 @@ function makePhase(phase){
 	}
 }
 
+
+obigoApp.createProvider("$ajax", [function(){
+	var prop = {
+		timeout : 25000
+	};
+	return {
+		prop : prop,
+		$run : [function(){
+			function req(option){
+				var opt= {
+					success:undefined,
+					error:undefined,
+					method : "GET",
+					url: "",
+					header : {},
+					timeout : prop.timeout
+				}
+				for (var key in option){
+					opt[key] = option[key];
+				}
+				obigo.ajax({
+					url : opt.url,
+					type : opt.method,
+					timeout : opt.timeout,
+					requestHeader : opt.header,
+					success : function(){
+						opt.success.apply(this, arguments);
+					},
+					error : function(){
+						opt.error.apply(this, arguments);
+					}
+					
+				});
+			}
+			return {
+				req :req 
+			};
+		}]
+	}
+}]);
 
 obigoApp.createProvider ("$elem", [function(){
 	var elemObj= {};
@@ -676,6 +716,18 @@ obigoApp.createProvider("$progress", function(){
 		}
 	}
 });
+
+obigoApp.createProvider("$promise", [function(){
+	var prop = {
+	};
+	return {
+		prop : prop,
+		$run : function(){
+			return {
+			};
+		}
+	}
+}]);
 
 obigoApp.createProvider("$template", [function(){
 	var T_PREFIX = "$$obigo_";
