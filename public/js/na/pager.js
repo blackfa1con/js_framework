@@ -16,7 +16,6 @@ obigoApp.createProvider ("$pager", ["$elemProvider", function($ep){
 		}
 		try{
 			titleElem.innerHTML = str;
-			nowPage.title = str;
 		}catch(e){
 		}
 	};
@@ -71,48 +70,46 @@ obigoApp.createProvider ("$pager", ["$elemProvider", function($ep){
 			},
 			setPageTitle : setPageTitle,
 			go : function(page, info){
-				setTimeout(function(){
-					var param, title;
-					if(info != undefined){
-						param = info.param || undefined;
-						title = info.title || "";
-					}
-					if(nowPage != pages[page]){
-						for(var key in pages){
-							if(key != page){
-								pages[key].elem.hide();
-							}else{
-								pages[key].elem.show();
-							}
+				var param, title;
+				if(info != undefined){
+					param = info.param || undefined;
+					title = info.title || "";
+				}
+				if(nowPage != pages[page]){
+					for(var key in pages){
+						if(key != page){
+							pages[key].elem.hide();
+						}else{
+							pages[key].elem.show();
 						}
-						for(var i =0;i<pageStack.length;i++){
-							if(pageStack[i].name == nowPage.name){
-								pageStack.splice(i, pageStack.length);
-								break;
-							}
-						}
-
-						if(!nowPage.noHistory){
-							pageStack.push(nowPage);
-						}
-
-						if(nowPage.onUnload){
-							(window.obigoApp.$$runPhase.$$m[nowPage.ctrl].$ctrl[nowPage.onUnload])();
-						}
-
-						nowPage = pages[page];
 					}
-					if((title == "" || title == undefined) && pages[page].title){
-						setPageTitle(pages[page].title);
-					}else if(title != "" && title != undefined){
-						setPageTitle(title);
+					for(var i =0;i<pageStack.length;i++){
+						if(pageStack[i].name == nowPage.name){
+							pageStack.splice(i, pageStack.length);
+							break;
+						}
+					}
 
+					if(!nowPage.noHistory){
+						pageStack.push(nowPage);
 					}
-					
-					if(pages[page].onLoad){
-						(window.obigoApp.$$runPhase.$$m[pages[page].ctrl].$ctrl[pages[page].onLoad])(param);
+
+					if(nowPage.onUnload){
+						(window.obigoApp.$$runPhase.$$m[nowPage.ctrl].$ctrl[nowPage.onUnload])();
 					}
-				}, 0);
+
+					nowPage = pages[page];
+				}
+				if((title == "" || title == undefined) && pages[page].title){
+					setPageTitle(pages[page].title);
+				}else if(title != "" && title != undefined){
+					setPageTitle(title);
+
+				}
+				
+				if(pages[page].onLoad){
+					(window.obigoApp.$$runPhase.$$m[pages[page].ctrl].$ctrl[pages[page].onLoad])(param);
+				}
 			},
 			back : function(){
 				var backPage = pageStack.pop();
@@ -127,9 +124,6 @@ obigoApp.createProvider ("$pager", ["$elemProvider", function($ep){
 							pages[key].elem.hide();
 						}else{
 							pages[key].elem.show();
-							if(pages[key].onShowByBack){
-								(window.obigoApp.$$runPhase.$$m[pages[key].ctrl].$ctrl[pages[key].onShowByBack])();
-							}
 						}
 					}
 					if(nowPage.onUnload){
@@ -138,6 +132,9 @@ obigoApp.createProvider ("$pager", ["$elemProvider", function($ep){
 					}
 					nowPage = backPage;
 					setPageTitle(nowPage.title);
+					if(backPage.onShowByBack){
+						(window.obigoApp.$$runPhase.$$m[backPage.ctrl].$ctrl[backPage.onShowByBack])();
+					}
 				}
 			}
 		};

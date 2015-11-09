@@ -4,8 +4,9 @@ obigoApp.createProvider("$ajax", [function(){
 	};
 	return {
 		prop : prop,
-		$run : [function(){
+		$run : ["$promise", function($promise){
 			function req(option){
+
 				var opt = {
 					success: undefined,
 					error: undefined,
@@ -18,22 +19,38 @@ obigoApp.createProvider("$ajax", [function(){
 					opt[key] = option[key];
 				}
 
-				obigo.ajax({
-					url : opt.url,
-					type : opt.method,
-					timeout : opt.timeout,
-					requestHeader : opt.header,
-					success : function(){
-						if(isFunction(opt.success)){
-							opt.success.apply(this, arguments);
+				return $promise.p(function(resolve, reject){
+					obigo.ajax({
+						url : opt.url,
+						type : opt.method,
+						timeout : opt.timeout,
+						requestHeader : opt.header,
+						success : function(){
+							var arg = {
+								response : arguments[0],
+								status : arguments[1],
+								xhr: arguments[2]
+							};
+							if(isFunction(opt.success)){
+								opt.success(arg);
+							}else{
+								resolve(arg);
+							}
+						},
+						error : function(){
+							var arg = {
+								xhr: arguments[0],
+								response: arguments[1],
+								status: arguments[2]
+							};
+							if(isFunction(opt.error)){
+								opt.error(arg);
+							}else{
+								reject(arg);
+							}
 						}
-					},
-					error : function(){
-						if(isFunction(opt.error)){
-							opt.error.apply(this, arguments);
-						}
-					}
-					
+						
+					});
 				});
 			}
 			return {
