@@ -37,6 +37,9 @@ obigoApp.createProvider ("$elem", [function(){
 	i = elems.length-1;
 	while( 0 <= i){
 		//elems[i].prototype = proto;
+		if(elemObj[elems[i].attributes[ATTR.ELEM].value] != undefined){
+			throw new Error("Duplicate attribute value for ob-elem : "+elems[i].attributes[ATTR.ELEM].value);
+		}
 		elemObj[elems[i].attributes[ATTR.ELEM].value] = ElemProto(elems[i]);
 		i--;
 	}
@@ -54,7 +57,6 @@ obigoApp.createProvider ("$elem", [function(){
 			return {
 				e : elemObj,
 				wrap : ElemProto
-
 			};
 		}
 	}

@@ -1,6 +1,6 @@
 /*
 obigoApp - v0.1.16
-release date : 2015-11-10 
+release date : 2015-11-26 
 
 Copyright (C) OBIGO Ltd., 2015.
 All rights reserved.
@@ -362,6 +362,9 @@ obigoApp.createProvider ("$elem", [function(){
 	i = elems.length-1;
 	while( 0 <= i){
 		//elems[i].prototype = proto;
+		if(elemObj[elems[i].attributes[ATTR.ELEM].value] != undefined){
+			throw new Error("Duplicate attribute value for ob-elem : "+elems[i].attributes[ATTR.ELEM].value);
+		}
 		elemObj[elems[i].attributes[ATTR.ELEM].value] = ElemProto(elems[i]);
 		i--;
 	}
