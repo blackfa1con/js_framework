@@ -13,6 +13,7 @@ obigoApp.createProvider("$ajax", [function(){
 					method : "GET",
 					url: "",
 					header : {},
+					dataType:"json",
 					timeout : prop.timeout
 				}
 				for (var key in option){
@@ -25,6 +26,7 @@ obigoApp.createProvider("$ajax", [function(){
 						type : opt.method,
 						timeout : opt.timeout,
 						requestHeader : opt.header,
+						dataType : opt.dataType,
 						success : function(){
 							var arg = {
 								response : arguments[0],
