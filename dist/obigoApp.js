@@ -1,6 +1,6 @@
 /*
 obigoApp - v0.1.16
-release date : 2015-12-09 
+release date : 2015-11-26 
 
 Copyright (C) OBIGO Ltd., 2015.
 All rights reserved.
@@ -276,7 +276,6 @@ obigoApp.createProvider("$ajax", [function(){
 					method : "GET",
 					url: "",
 					header : {},
-					dataType : "json", 
 					timeout : prop.timeout
 				}
 				for (var key in option){
@@ -288,7 +287,6 @@ obigoApp.createProvider("$ajax", [function(){
 						url : opt.url,
 						type : opt.method,
 						timeout : opt.timeout,
-						dataType : opt.dataType,
 						requestHeader : opt.header,
 						success : function(){
 							var arg = {
@@ -384,6 +382,7 @@ obigoApp.createProvider ("$elem", [function(){
 			return {
 				e : elemObj,
 				wrap : ElemProto
+
 			};
 		}
 	}
