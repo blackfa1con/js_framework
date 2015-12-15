@@ -19,7 +19,7 @@ obigoApp.createProvider("$log", [function(){
 		var file = fileArr[2];
 		var str = "";
 		//console.log(file);
-		console[level](setPrefix(level, file)+msg);
+		console[level](setPrefix(level, file), msg);
 	}
 	function setPrefix(level, file){
 		var d = new Date();
