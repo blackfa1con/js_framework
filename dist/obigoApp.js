@@ -1,6 +1,6 @@
 /*
 obigoApp - v0.1.16
-release date : 2015-12-09 
+release date : 2015-12-29 
 
 Copyright (C) OBIGO Ltd., 2015.
 All rights reserved.
@@ -491,7 +491,7 @@ obigoApp.createProvider("$log", [function(){
 		var file = fileArr[2];
 		var str = "";
 		//console.log(file);
-		console[level](setPrefix(level, file)+msg);
+		console[level](setPrefix(level, file), msg);
 	}
 	function setPrefix(level, file){
 		var d = new Date();
@@ -610,6 +610,16 @@ obigoApp.createProvider ("$pager", ["$elemProvider", function($ep){
 				return titleElem.innerHTML;
 			},
 			setPageTitle : setPageTitle,
+			changePageTitle : function(str){
+				if(str == undefined){
+					str = "";
+				}
+				try{
+					titleElem.innerHTML = str;
+					nowPage.title = str;
+				}catch(e){
+				}
+			},
 			go : function(page, info){
 				var param, title;
 				if(info != undefined){
@@ -677,7 +687,17 @@ obigoApp.createProvider ("$pager", ["$elemProvider", function($ep){
 						(window.obigoApp.$$runPhase.$$m[backPage.ctrl].$ctrl[backPage.onShowByBack])();
 					}
 				}
+			},
+			clearHistory: function(){
+				for(var i = pageStack.length-1;i>=0;i--){
+					if(pageStack[i].initPage){
+						pageStack.splice(i+1, pageStack.length);
+						break;
+					}
+				}
+
 			}
+			
 		};
 	}];
 	return serviceObj;
@@ -705,6 +725,7 @@ obigoApp.createProvider("$progress", function(){
 		opt = opt || {};
 		var onTimeout = opt.onTimeout || prop.onDefaultTimeout;
 		var text = opt.text || " ";
+		var timeout = opt.timeout || prop.timeout;
 
 		if(onTimeout != undefined){
 			if(timer != undefined){
@@ -713,7 +734,7 @@ obigoApp.createProvider("$progress", function(){
 			timer = setTimeout(function(){
 				hide();
 				onTimeout();
-			}, prop.timeout);
+			}, timeout);
 		}
 		loading.changeMsg(text);
 		loading.show();

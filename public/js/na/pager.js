@@ -69,6 +69,16 @@ obigoApp.createProvider ("$pager", ["$elemProvider", function($ep){
 				return titleElem.innerHTML;
 			},
 			setPageTitle : setPageTitle,
+			changePageTitle : function(str){
+				if(str == undefined){
+					str = "";
+				}
+				try{
+					titleElem.innerHTML = str;
+					nowPage.title = str;
+				}catch(e){
+				}
+			},
 			go : function(page, info){
 				var param, title;
 				if(info != undefined){
@@ -136,7 +146,17 @@ obigoApp.createProvider ("$pager", ["$elemProvider", function($ep){
 						(window.obigoApp.$$runPhase.$$m[backPage.ctrl].$ctrl[backPage.onShowByBack])();
 					}
 				}
+			},
+			clearHistory: function(){
+				for(var i = pageStack.length-1;i>=0;i--){
+					if(pageStack[i].initPage){
+						pageStack.splice(i+1, pageStack.length);
+						break;
+					}
+				}
+
 			}
+			
 		};
 	}];
 	return serviceObj;
