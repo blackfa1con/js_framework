@@ -1,5 +1,5 @@
 # js_framework
-javascript framework for obigo web app. it is working on **obigo libarary**. it must use with **obigo libaray**
+javascript framework for obigo web app. it works on **obigo libarary**. it must use with **obigo libaray**
 <div style="border:none;">
   <img src="http://210.216.54.99/common/img/archi.png" />
 </div>
