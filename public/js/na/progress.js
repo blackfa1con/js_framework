@@ -19,6 +19,7 @@ obigoApp.createProvider("$progress", function(){
 		opt = opt || {};
 		var onTimeout = opt.onTimeout || prop.onDefaultTimeout;
 		var text = opt.text || " ";
+		var timeout = opt.timeout || prop.timeout;
 
 		if(onTimeout != undefined){
 			if(timer != undefined){
@@ -27,7 +28,7 @@ obigoApp.createProvider("$progress", function(){
 			timer = setTimeout(function(){
 				hide();
 				onTimeout();
-			}, prop.timeout);
+			}, timeout);
 		}
 		loading.changeMsg(text);
 		loading.show();
