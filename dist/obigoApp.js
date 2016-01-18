@@ -1,8 +1,8 @@
 /*
-obigoApp - v0.1.16
-release date : 2015-12-29 
+obigoApp - v0.1.18
+release date : 2016-01-14 
 
-Copyright (C) OBIGO Ltd., 2015.
+Copyright (C) OBIGO Ltd., 2016.
 All rights reserved.
 
 This software is covered by the license agreement between
@@ -68,6 +68,95 @@ function isFunction(o){
 }
 
 
+function oPromise(fn) {
+    var state = 'pending';
+    var value;
+    var deferred = null;
+
+    function resolve(newValue) {
+        try {
+            if (newValue && typeof newValue.then === 'function') {
+                newValue.then(resolve, reject);
+                return;
+            }
+            state = 'resolved';
+            value = newValue;
+
+            if (deferred) {
+                handle(deferred);
+            }
+        } catch (e) {
+            reject(e);
+        }
+    }
+
+    function reject(reason) {
+        state = 'rejected';
+        value = reason;
+
+        if (deferred) {
+            handle(deferred);
+        }
+    }
+
+    function handle(handler) {
+        if (state === 'pending') {
+            deferred = handler;
+            return;
+        }
+
+	setTimeout(function(){
+		var handlerCallback;
+
+		if (state === 'resolved') {
+		    handlerCallback = handler.onResolved;
+		} else {
+		    handlerCallback = handler.onRejected;
+		}
+
+		if (!handlerCallback) {
+		    if (state === 'resolved') {
+			handler.resolve(value);
+		    } else {
+			handler.reject(value);
+		    }
+
+		    return;
+		}
+
+		var ret;
+		try {
+		    ret = handlerCallback(value);
+		    handler.resolve(ret);
+		} catch (e) {
+		    handler.reject(e);
+		}
+	},0);
+    }
+    this.catch = function(onRejected){
+	new oPromise(function (resolve, reject) {
+            handle({
+                onResolved: undefined,
+                onRejected: onRejected,
+                resolve: resolve,
+                reject: reject
+            });
+        });
+    };
+
+    this.then = function (onResolved, onRejected) {
+        return new oPromise(function (resolve, reject) {
+            handle({
+                onResolved: onResolved,
+                onRejected: onRejected,
+                resolve: resolve,
+                reject: reject
+            });
+        });
+    };
+
+    fn(resolve, reject);
+}
 
 /*
  * bind events in elements
@@ -397,7 +486,34 @@ obigoApp.createProvider ("$list", ["$templateProvider", function($tp){
 		var listObj = {};
 		listObj.o = listElem;
 		listObj.update = function(opt){
+			var newContainer = document.createElement(this.o.tagName);
+			
 
+
+			var attrs = this.o.attributes;
+			for(var i = 0;i<attrs.length;i++){
+				newContainer.setAttribute(attrs[i].nodeName, attrs[i].nodeValue);
+			}
+
+			var listStr = "";
+			for(var i = 0;i<opt.listItem.length;i++){
+				var tmpl;
+				if(opt.tmplId){
+					tmpl = $tp.get(opt.tmplId);
+				}else{
+					tmpl = $tp.get(this.id);
+				}
+				opt.callback(i, opt.listItem[i], tmpl.firstElementChild);
+			//	listStr += tmpl.firstElementChild.outerHTML;
+				newContainer.appendChild(tmpl);
+			}
+			var parentNode = this.o.parentNode; 
+			parentNode.replaceChild(newContainer, this.o);
+			parentNode.appendChild(newContainer);
+			this.o = newContainer;
+
+
+			/*
 			var existItemLen = this.o.children.length;
 
 			if(existItemLen == 0){
@@ -429,6 +545,7 @@ obigoApp.createProvider ("$list", ["$templateProvider", function($tp){
 					}
 				}
 			}
+			*/
 
 		}
 		return listObj;
@@ -768,10 +885,10 @@ obigoApp.createProvider("$promise", [function(){
 		prop : prop,
 		$run : function(){
 			function all(pArr){
-				return Promise.all(pArr);
+				return oPromise.all(pArr);
 			}
 			function p(work){
-				return new Promise(function(resolve, reject){
+				return new oPromise(function(resolve, reject){
 					work(resolve, reject);
 				});
 			}

@@ -6,7 +6,34 @@ obigoApp.createProvider ("$list", ["$templateProvider", function($tp){
 		var listObj = {};
 		listObj.o = listElem;
 		listObj.update = function(opt){
+			var newContainer = document.createElement(this.o.tagName);
+			
 
+
+			var attrs = this.o.attributes;
+			for(var i = 0;i<attrs.length;i++){
+				newContainer.setAttribute(attrs[i].nodeName, attrs[i].nodeValue);
+			}
+
+			var listStr = "";
+			for(var i = 0;i<opt.listItem.length;i++){
+				var tmpl;
+				if(opt.tmplId){
+					tmpl = $tp.get(opt.tmplId);
+				}else{
+					tmpl = $tp.get(this.id);
+				}
+				opt.callback(i, opt.listItem[i], tmpl.firstElementChild);
+			//	listStr += tmpl.firstElementChild.outerHTML;
+				newContainer.appendChild(tmpl);
+			}
+			var parentNode = this.o.parentNode; 
+			parentNode.replaceChild(newContainer, this.o);
+			parentNode.appendChild(newContainer);
+			this.o = newContainer;
+
+
+			/*
 			var existItemLen = this.o.children.length;
 
 			if(existItemLen == 0){
@@ -38,6 +65,7 @@ obigoApp.createProvider ("$list", ["$templateProvider", function($tp){
 					}
 				}
 			}
+			*/
 
 		}
 		return listObj;
